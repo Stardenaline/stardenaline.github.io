@@ -497,6 +497,24 @@
     </footer>
 
     <script>
+        // Artist links mapping
+        const artistLinks = {
+            'AmuuSalto': 'https://discord.com/users/739007222201319515',
+            'JOVE': 'https://vgen.co/JOVE',
+            'RubicArt': 'https://discord.com/users/660008407608328193',
+            'BurgerFlipper': 'https://vgen.co/BurgerFlipper',
+            'Laelius': 'https://vgen.co/Laelius',
+            'Rizzzolis': 'https://vgen.co/rizzzolis/',
+            'AhzanMC': 'https://discord.com/users/692325258581114951',
+            'Clouhhh': 'https://discord.com/users/198628548649418752',
+            'Clouhhhh': 'https://discord.com/users/198628548649418752',
+            'Minn1e': 'https://vgen.co/Minn1e/',
+            'Vekra': 'https://discord.com/users/1306863580221669391',
+            'Robin': 'https://discord.com/users/249696282711556107',
+            'ErenSky': 'https://discord.com/users/1404884011238555719',
+            'Kelvinram': 'https://discord.com/users/785453769391341578'
+        };
+
         // Mobile menu functionality
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
@@ -518,7 +536,14 @@
             
             expandedImage.src = imageSrc;
             expandedTitle.textContent = title;
-            expandedArtist.textContent = 'By ' + artist;
+            
+            // Create clickable artist link in expanded view
+            const artistLink = artistLinks[artist];
+            if (artistLink && artist !== 'Zeze' && artist !== '???') {
+                expandedArtist.innerHTML = 'By <a href="' + artistLink + '" class="artist-link" target="_blank">' + artist + '</a>';
+            } else {
+                expandedArtist.textContent = 'By ' + artist;
+            }
             
             expandedView.classList.add('active');
             document.body.style.overflow = 'hidden';
