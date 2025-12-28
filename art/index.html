@@ -596,4 +596,188 @@
         });
     </script>
 </body>
+    <!-- START OF PROTECTION CODE - DO NOT REMOVE -->
+<script>
+// Simple image protection for Starzy.Art
+(function() {
+    console.log('🎨 Starzy.Art Protection Enabled');
+    
+    // Function to protect all images
+    function protectAllImages() {
+        // Find all images on the page
+        const allImages = document.querySelectorAll('img');
+        
+        allImages.forEach(image => {
+            // Block right-click menu
+            image.oncontextmenu = function(e) {
+                e.preventDefault();
+                showMessage('Right-click disabled on images');
+                return false;
+            };
+            
+            // Block image dragging
+            image.ondragstart = function(e) {
+                e.preventDefault();
+                return false;
+            };
+            
+            // Mobile: Block long-press (save image)
+            let pressTimer;
+            
+            image.addEventListener('touchstart', function(e) {
+                pressTimer = setTimeout(() => {
+                    e.preventDefault();
+                    showMessage('Long-press disabled');
+                    // Small vibration on mobile
+                    if (navigator.vibrate) navigator.vibrate(30);
+                }, 500); // 500ms = half second
+            });
+            
+            image.addEventListener('touchend', function() {
+                clearTimeout(pressTimer);
+            });
+            
+            image.addEventListener('touchmove', function() {
+                clearTimeout(pressTimer);
+            });
+            
+            // Make it look unselectable
+            image.style.userSelect = 'none';
+            image.style.webkitUserSelect = 'none';
+        });
+        
+        console.log(`🔒 Protected ${allImages.length} images`);
+    }
+    
+    // Show a message when protection activates
+    function showMessage(text) {
+        // Remove old message if exists
+        const oldMsg = document.getElementById('protection-msg');
+        if (oldMsg) oldMsg.remove();
+        
+        // Create new message
+        const msg = document.createElement('div');
+        msg.id = 'protection-msg';
+        msg.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(0,0,0,0.9);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                z-index: 99999;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                border-left: 4px solid #ff6b6b;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+                backdrop-filter: blur(10px);
+            ">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 18px;">🛡️</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">Image Protected</div>
+                        <div style="font-size: 13px; opacity: 0.9;">${text}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add animation style
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        document.body.appendChild(msg);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (msg.parentNode) {
+                msg.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => msg.remove(), 300);
+            }
+        }, 3000);
+    }
+    
+    // Wait for page to load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', protectAllImages);
+    } else {
+        protectAllImages();
+    }
+    
+    // Also protect images that load later
+    const observer = new MutationObserver(() => {
+        protectAllImages();
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    // Add a small badge to show protection is active
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const badge = document.createElement('div');
+            badge.innerHTML = `
+                <div style="
+                    position: fixed;
+                    bottom: 15px;
+                    left: 15px;
+                    background: rgba(40, 40, 40, 0.9);
+                    color: #fff;
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    font-family: Arial, sans-serif;
+                    font-size: 12px;
+                    z-index: 999;
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255,255,255,0.1);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    animation: fadeIn 1s ease;
+                ">
+                    <span style="color: #4dabf7;">🛡️</span>
+                    Image Protection Active
+                </div>
+            `;
+            
+            const badgeStyle = document.createElement('style');
+            badgeStyle.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(badgeStyle);
+            
+            document.body.appendChild(badge);
+            
+            // Hide badge after 10 seconds on mobile
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    badge.style.opacity = '0';
+                    badge.style.transition = 'opacity 1s';
+                    setTimeout(() => badge.remove(), 1000);
+                }, 10000);
+            }
+        }, 1000);
+    });
+})();
+</script>
+<!-- END OF PROTECTION CODE - DO NOT REMOVE -->
 </html>
