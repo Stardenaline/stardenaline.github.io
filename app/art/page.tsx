@@ -72,3 +72,44 @@ export default function ArtPage() {
           >
             <button
               className="absolute top-4 right-4 text-white hover:text-accent z-10"
+              onClick={() => setSelectedArt(null)}
+            >
+              <X size={32} />
+            </button>
+            
+            <div className="p-6">
+              <div className="relative h-[60vh] mb-6">
+                <Image
+                  src={selectedArt.imageUrl}
+                  alt={selectedArt.title}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                />
+              </div>
+              
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-accent mb-2">{selectedArt.title}</h3>
+                <p className="text-text-primary">
+                  By{' '}
+                  {selectedArt.artistUrl ? (
+                    <a
+                      href={selectedArt.artistUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent hover:underline"
+                    >
+                      {selectedArt.artist}
+                    </a>
+                  ) : (
+                    <span>{selectedArt.artist}</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
