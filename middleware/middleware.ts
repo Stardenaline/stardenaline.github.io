@@ -4,15 +4,33 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
-  // Protect direct access to /assets
-  if (pathname.startsWith('/assets')) {
-    // Check if request is coming from Next.js internal routing
+  // Protect direct access to /assets directory
+  if (pathname.startsWith('/assets/')) {
+    // Check if it's an internal request (coming from our site)
     const referer = request.headers.get('referer')
-    const isInternalRequest = referer?.includes(request.nextUrl.origin) || 
-                             request.headers.get('x-middleware-prefetch')
+    const isInternal = referer?.includes(request.nextUrl.origin) || false
     
-    if (!isInternalRequest && process.env.NODE_ENV === 'production') {
-      return new NextResponse('Access Forbidden', { status: 403 })
+    // Check for Next.js internal requests
+    const isNextInternal = 
+      request.headers.get('x-middleware-prefetch') === '1' ||
+      request.headers.get('x-nextjs-data') === '1' ||
+      request.headers.get('user-agent')?.includes('Next.js')
+    
+    // Allow internal requests, block external direct access
+    if (!isInternal && !isNextInternal) {
+      // Return 403 Forbidden for external direct access
+      return new NextResponse(
+        JSON.stringify({
+          error: 'Forbidden',
+          message: 'Assets are only accessible internally'
+        }),
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
     }
   }
   
@@ -20,5 +38,15 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/assets/:path*'
+  matcher: [
+    /*
+     * Match all request paths except:
+     * 1. /api routes
+     * 2. /_next (Next.js internals)
+     * 3. /static (inside /public)
+     * 4. /favicon.ico, /robots.txt
+     * 5. /sitemap.xml
+     */
+    '/((?!api|_next|static|favicon.ico|robots.txt|sitemap.xml).*)',
+  ],
 }
