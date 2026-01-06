@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'  // ← IMPORTANT: This imports the CSS
+import './globals.css'
 import Navigation from '@/components/Navigation'
 import GlowEffect from '@/components/GlowEffect'
-import { ThemeProvider } from 'next-themes'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,18 +26,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${inter.className} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <GlowEffect />
-          <Navigation />
-          <main className="relative z-10">
-            {children}
-          </main>
-          <footer className="text-center py-8 border-t border-[#2a2a2a] mt-16">
-            <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} Stars. All rights reserved.</p>
-          </footer>
-        </ThemeProvider>
+    <html lang="en" className="dark">
+      <body className={`${inter.className} bg-[#121212] text-[#e0e0e0] min-h-screen`}>
+        <GlowEffect />
+        <Navigation />
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+          {children}
+        </main>
+        <footer className="text-center py-6 border-t border-[#2a2a2a] mt-12">
+          <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} Stars. All rights reserved.</p>
+        </footer>
       </body>
     </html>
   )
