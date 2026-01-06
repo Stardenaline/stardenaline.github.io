@@ -1,19 +1,17 @@
 {
-  "name": "starzy-nextjs",
-  "version": "0.1.0",
+  "name": "starzy-top",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
-    "next": "14.2.5",
+    "next": "14.2.13",  // UPDATED: Fixes security issue
     "react": "^18",
     "react-dom": "^18",
-    "lucide-react": "^0.344.0",
-    "date-fns": "^3.3.1"
+    "lucide-react": "^0.344.0"
   },
   "devDependencies": {
     "@types/node": "^20",
