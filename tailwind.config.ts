@@ -1,18 +1,20 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from 'tailwindcss';
+
+const config: Config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         background: {
-          dark: '#121212',
-          darker: '#0a0a0a',
+          DEFAULT: '#121212',
+          dark: '#0a0a0a',
           card: '#1e1e1e',
-          'card-hover': '#2a2a2a',
+          hover: '#2a2a2a',
         },
         accent: {
           DEFAULT: '#00ffff',
@@ -30,13 +32,14 @@ module.exports = {
       animation: {
         'float': 'float 3s ease-in-out infinite',
         'float-glow': 'float-glow 8s ease-in-out infinite',
+        'float-glow-delayed': 'float-glow 10s ease-in-out infinite 2s',
         'pulse': 'pulse 2s infinite',
-        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'fade-in': 'fadeIn 1s ease',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '50%': { transform: 'translateY(-5px)' },
         },
         'float-glow': {
           '0%, 100%': { transform: 'translate(0, 0)' },
@@ -44,12 +47,18 @@ module.exports = {
           '50%': { transform: 'translate(0, 40px)' },
           '75%': { transform: 'translate(-20px, 20px)' },
         },
+        pulse: {
+          '0%, 100%': { opacity: '0.6' },
+          '50%': { opacity: '1' },
+        },
         fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+          from: { opacity: '0', transform: 'translateY(20px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },
   },
   plugins: [],
 };
+
+export default config;
