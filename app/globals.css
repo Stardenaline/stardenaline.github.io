@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #121212;
+    --text: #e0e0e0;
+    --accent: #00ffff;
+    --card: #1e1e1e;
+    --hover: #00cccc;
+    --yellow: #ffff00;
+  }
+
+  body {
+    @apply bg-background text-text;
+  }
+}
+
+@layer components {
+  .section-card {
+    @apply bg-card p-6 rounded-xl border border-gray-800 hover:border-accent transition-all duration-300 hover:shadow-lg hover:shadow-accent/10;
+  }
+  
+  .section-title {
+    @apply text-accent text-2xl font-bold mb-4 pb-2 border-b border-accent/30;
+  }
+  
+  .btn-primary {
+    @apply px-4 py-2 bg-accent text-background font-medium rounded-lg hover:bg-hover transition-colors duration-300;
+  }
+  
+  .btn-outline {
+    @apply px-4 py-2 border border-accent text-accent rounded-lg hover:bg-accent hover:text-background transition-colors duration-300;
+  }
+}
