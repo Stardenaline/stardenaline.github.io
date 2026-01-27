@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Art Gallery</title>
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-darker: #0a0a0a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-color: #00ffff;
+            --accent-hover: #00e5e5;
+            --card-bg: #1e1e1e;
+            --transition: all 0.3s ease;
+            --yellow: #ffff00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* New Header Styles (from portfolio) */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background-color: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .home-btn {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .home-btn:hover {
+            background-color: rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-desktop {
+            display: flex;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-desktop {
+                display: none;
+            }
+        }
+
+        .nav-mobile {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-mobile {
+                display: block;
+                position: relative;
+            }
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 150px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-menu.show {
+            display: flex;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(0, 255, 255, 0.1);
+            color: var(--accent-color);
+        }
+
+        /* Rest of your original styles... */
+        /* Main Content */
+        main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 7rem; /* Added to account for fixed header */
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .welcome-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Art Gallery Grid */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .art-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .art-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 255, 255, 0.1);
+        }
+
+        .art-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .art-card:hover::before {
+            opacity: 1;
+        }
+
+        .art-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .art-info {
+            padding: 1.2rem;
+        }
+
+        .art-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .art-artist {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .artist-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .artist-link:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        /* Expanded Art View */
+        .art-expanded {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .art-expanded.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .expanded-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .expanded-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .expanded-info {
+            margin-top: 1rem;
+            text-align: center;
+            color: white;
+        }
+
+        .close-expanded {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-darker);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="/" class="home-btn">Home</a>
+        
+        <!-- Desktop Navigation -->
+        <nav class="nav-desktop">
+            <a href="#" class="nav-link" onclick="navigateTo('/socials')">Socials</a>
+            <a href="#" class="nav-link" onclick="navigateTo('/art')">Art</a>
+            <a href="#" class="nav-link" onclick="navigateTo('/download')">Download</a>
+            <a href="#" class="nav-link" onclick="navigateTo('/donate')">Donate</a>
+            <a href="#" class="nav-link" onclick="navigateTo('/contact')">Contact</a>
+        </nav>
+        
+        <!-- Mobile Navigation -->
+        <div class="nav-mobile">
+            <button class="nav-btn" onclick="toggleMobileMenu()">☰</button>
+            <div class="mobile-menu" id="mobileMenu">
+                <a href="#" class="nav-link" onclick="navigateTo('/socials')">Socials</a>
+                <a href="#" class="nav-link" onclick="navigateTo('/art')">Art</a>
+                <a href="#" class="nav-link" onclick="navigateTo('/download')">Download</a>
+                <a href="#" class="nav-link" onclick="navigateTo('/donate')">Donate</a>
+                <a href="#" class="nav-link" onclick="navigateTo('/contact')">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="welcome-section">
+            <h1 class="welcome-title">Welcome to My Art Gallery</h1>
+            <p class="welcome-text">
+                This page show all art that I have.
+                Usually I ask people to make it.
+            </p>
+        </section>
+        
+        <div class="gallery">
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsByAmuu.png', 'Stars', 'AmuuSalto')">
+                <img src="/Assets/StarsArt/StarsByAmuu.png" alt="Stars artwork by AmuuSalto" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/739007222201319515" class="artist-link" target="_blank" onclick="event.stopPropagation()">AmuuSalto</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsByJOVE.png', 'Stars', 'JOVE')">
+                <img src="/Assets/StarsArt/StarsByJOVE.png" alt="Stars artwork by JOVE" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars</h3>
+                    <p class="art-artist">By <a href="https://vgen.co/JOVE" class="artist-link" target="_blank" onclick="event.stopPropagation()">JOVE</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsChadByAmuu.png', 'Stars Chad', 'AmuuSalto')">
+                <img src="/Assets/StarsArt/StarsChadByAmuu.png" alt="Stars Chad artwork by AmuuSalto" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Chad</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/739007222201319515" class="artist-link" target="_blank" onclick="event.stopPropagation()">AmuuSalto</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsAnotherByRubicArt.png', 'Stars Mini', 'RubicArt')">
+                <img src="/Assets/StarsArt/StarsAnotherByRubicArt.png" alt="Stars Mini artwork by RubicArt" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Mini</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/660008407608328193" class="artist-link" target="_blank" onclick="event.stopPropagation()">RubicArt</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsSigmaByBurgerFlipper.png', 'Stars Sigma', 'BurgerFlipper')">
+                <img src="/Assets/StarsArt/StarsSigmaByBurgerFlipper.png" alt="Stars Sigma artwork by BurgerFlipper" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Sigma</h3>
+                    <p class="art-artist">By <a href="https://vgen.co/BurgerFlipper" class="artist-link" target="_blank" onclick="event.stopPropagation()">BurgerFlipper</a></p>
+                </div>
+            </div>
+            
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsMeltedIceCreamByLaelius.png', 'Stars Melted Ice Cream', 'Laelius')">
+                <img src="/Assets/StarsArt/StarsMeltedIceCreamByLaelius.png" alt="Stars Melted Ice Cream artwork by Laelius" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Melted Ice Cream</h3>
+                    <p class="art-artist">By <a href="https://vgen.co/Laelius" class="artist-link" target="_blank" onclick="event.stopPropagation()">Laelius</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsChibiByRubicArt.png', 'Stars Chibi', 'RubicArt')">
+                <img src="/Assets/StarsArt/StarsChibiByRubicArt.png" alt="Stars Chibi artwork by RubicArt" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Chibi</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/660008407608328193" class="artist-link" target="_blank" onclick="event.stopPropagation()">RubicArt</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsByRizzzolis.png', 'Stars Handstand', 'Rizzzolis')">
+                <img src="/Assets/StarsArt/StarsByRizzzolis.png" alt="Stars Handstand artwork by Rizzzolis" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Handstand</h3>
+                    <p class="art-artist">By <a href="https://vgen.co/rizzzolis/" class="artist-link" target="_blank" onclick="event.stopPropagation()">Rizzzolis</a></p>
+                </div>
+            </div>
+            
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsByAhzanMC.png', 'Stars Big', 'AhzanMC')">
+                <img src="/Assets/StarsArt/StarsByAhzanMC.png" alt="Stars Big artwork by AhzanMC" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Big</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/692325258581114951" class="artist-link" target="_blank" onclick="event.stopPropagation()">AhzanMC</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsMinecraftLiveByClouh.gif', 'Stars Minecraft Live', 'Clouhhhh')">
+                <img src="/Assets/StarsArt/StarsMinecraftLiveByClouh.gif" alt="Stars Minecraft Live artwork by Clouhhh" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Minecraft Live</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/198628548649418752" class="artist-link" target="_blank" onclick="event.stopPropagation()">Clouhhh</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsChibiByMinn1e.png', 'Stars Chibi', 'Minn1e')">
+                <img src="/Assets/StarsArt/StarsChibiByMinn1e.png" alt="Stars Chibi artwork by Minn1e" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Chibi</h3>
+                    <p class="art-artist">By <a href="https://vgen.co/Minn1e/" class="artist-link" target="_blank" onclick="event.stopPropagation()">Minn1e</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsRenderByVekra.png', 'Stars Render', 'Vekra')">
+                <img src="/Assets/StarsArt/StarsRenderByVekra.png" alt="Stars Render artwork by Vekra" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Render</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/1306863580221669391" class="artist-link" target="_blank" onclick="event.stopPropagation()">Vekra</a></p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsByRobin.png', 'Stars', 'Robin')">
+                <img src="/Assets/StarsArt/StarsByRobin.png" alt="Stars artwork by Robin" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/249696282711556107" class="artist-link" target="_blank" onclick="event.stopPropagation()">Robin</a></p>
+                </div>
+            </div>
+            
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/RenderByErenSky.png', 'Stars Render', 'ErenSky')">
+                <img src="/Assets/StarsArt/RenderByErenSky.png" alt="Stars Render artwork by ErenSky" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Render</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/1404884011238555719" class="artist-link" target="_blank" onclick="event.stopPropagation()">ErenSky</a></p>
+                </div>
+            </div>
+            
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsAndZimsByZeze.png', 'Stars And Zims', 'Zeze')">
+                <img src="/Assets/StarsArt/StarsAndZimsByZeze.png" alt="Stars And Zims artwork by Zeze" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars And Zims</h3>
+                    <p class="art-artist">By Zeze</p>
+                </div>
+            </div>
+            
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsBybruhforgot.png', 'Stars Big', '???')">
+                <img src="/Assets/StarsArt/StarsBybruhforgot.png" alt="Stars Big artwork by ???" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Big</h3>
+                    <p class="art-artist">By ???</p>
+                </div>
+            </div>
+
+            <div class="art-card" onclick="expandArt('/Assets/StarsArt/StarsByKELVINRAM.png', 'Stars Weird', 'Kelvinram')">
+                <img src="/Assets/StarsArt/StarsByKELVINRAM.png" alt="Stars Weird artwork by Kelvinram" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">Stars Weird</h3>
+                    <p class="art-artist">By <a href="https://discord.com/users/785453769391341578" class="artist-link" target="_blank" onclick="event.stopPropagation()">Kelvinram</a></p>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Expanded Art View -->
+    <div class="art-expanded" id="artExpanded">
+        <div class="expanded-content">
+            <button class="close-expanded" onclick="closeExpandedArt()">×</button>
+            <img id="expandedArtImage" class="expanded-image" src="" alt="Expanded Art">
+            <div class="expanded-info">
+                <h3 id="expandedArtTitle"></h3>
+                <p id="expandedArtArtist"></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p class="footer-text">© 2025 starzy.top. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Artist links mapping
+        const artistLinks = {
+            'AmuuSalto': 'https://discord.com/users/739007222201319515',
+            'JOVE': 'https://vgen.co/JOVE',
+            'RubicArt': 'https://discord.com/users/660008407608328193',
+            'BurgerFlipper': 'https://vgen.co/BurgerFlipper',
+            'Laelius': 'https://vgen.co/Laelius',
+            'Rizzzolis': 'https://vgen.co/rizzzolis/',
+            'AhzanMC': 'https://discord.com/users/692325258581114951',
+            'Clouhhh': 'https://discord.com/users/198628548649418752',
+            'Clouhhhh': 'https://discord.com/users/198628548649418752',
+            'Minn1e': 'https://vgen.co/Minn1e/',
+            'Vekra': 'https://discord.com/users/1306863580221669391',
+            'Robin': 'https://discord.com/users/249696282711556107',
+            'ErenSky': 'https://discord.com/users/1404884011238555719',
+            'Kelvinram': 'https://discord.com/users/785453769391341578'
+        };
+
+        // Mobile menu functionality
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('show');
+        }
+
+        // Navigation function using relative paths
+        function navigateTo(path) {
+            window.location.href = path;
+            document.getElementById('mobileMenu').classList.remove('show');
+        }
+
+        // Expand art to full view
+        function expandArt(imageSrc, title, artist) {
+            const expandedView = document.getElementById('artExpanded');
+            const expandedImage = document.getElementById('expandedArtImage');
+            const expandedTitle = document.getElementById('expandedArtTitle');
+            const expandedArtist = document.getElementById('expandedArtArtist');
+            
+            expandedImage.src = imageSrc;
+            expandedTitle.textContent = title;
+            
+            // Create clickable artist link in expanded view
+            const artistLink = artistLinks[artist];
+            if (artistLink && artist !== 'Zeze' && artist !== '???') {
+                expandedArtist.innerHTML = 'By <a href="' + artistLink + '" class="artist-link" target="_blank">' + artist + '</a>';
+            } else {
+                expandedArtist.textContent = 'By ' + artist;
+            }
+            
+            expandedView.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close expanded art view
+        function closeExpandedArt() {
+            document.getElementById('artExpanded').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close expanded view when clicking outside the image
+        document.getElementById('artExpanded').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeExpandedArt();
+            }
+        });
+
+        // Close with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeExpandedArt();
+            }
+        });
+
+        // Add hover effect to art cards on touch devices
+        if ('ontouchstart' in window) {
+            document.querySelectorAll('.art-card').forEach(card => {
+                card.addEventListener('touchstart', function() {
+                    this.classList.add('hover-effect');
+                });
+                
+                card.addEventListener('touchend', function() {
+                    this.classList.remove('hover-effect');
+                });
+            });
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navBtn = document.querySelector('.nav-btn');
+            
+            if (mobileMenu.classList.contains('show') && 
+                e.target !== mobileMenu && 
+                !mobileMenu.contains(e.target) && 
+                e.target !== navBtn) {
+                mobileMenu.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
